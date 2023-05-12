@@ -43,9 +43,11 @@ class EnvManager:
 
             for name, module in list(sys.modules.items()):
                 module_path = getattr(module, "__file__", None)
-                if module_path is not None:
-                    if sys_path_entry in Path(module_path).parents:
-                        del sys.modules[name]
+                if (
+                    module_path is not None
+                    and sys_path_entry in Path(module_path).parents
+                ):
+                    del sys.modules[name]
 
             yield sys_path_entry
 

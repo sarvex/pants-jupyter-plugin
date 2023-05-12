@@ -95,8 +95,7 @@ class PexManager:
         return self._fallback_pex
 
     def unmount(self) -> Iterator[Path]:
-        for path_entry in self._env_mgr.unmount():
-            yield path_entry
+        yield from self._env_mgr.unmount()
 
     def mount(self, pex_to_mount: Path) -> Iterator[Path]:
         """Mounts the contents of the given PEX on the sys.path for importing."""
@@ -172,5 +171,6 @@ class PexManager:
             check=True,
         )
 
-        for path_entry in self._env_mgr.mount(Path(p) for p in result.stdout.decode().splitlines()):
-            yield path_entry
+        yield from self._env_mgr.mount(
+            Path(p) for p in result.stdout.decode().splitlines()
+        )

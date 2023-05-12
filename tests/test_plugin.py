@@ -131,7 +131,7 @@ def test_pex_load_correct_interpreter_not_available(pex: Pex, tmpdir: Path) -> N
     for line in list(lines):
         match = re.match(r"There are (?P<count>\d+) compatible interpreters on this system:", line)
         if match is not None:
-            count = int(match.group("count"))
+            count = int(match["count"])
             lines.remove(line)
     assert count >= 0
 
@@ -142,9 +142,9 @@ def test_pex_load_correct_interpreter_not_available(pex: Pex, tmpdir: Path) -> N
     for line in lines:
         match = re.match(r"^(?P<index>\d+)\.\) (?P<interpreter>.*)$", line)
         if match is not None:
-            indexes.remove(int(match.group("index")))
-            interpreters.remove(Path(match.group("interpreter")))
-    assert len(indexes) == 0
+            indexes.remove(int(match["index"]))
+            interpreters.remove(Path(match["interpreter"]))
+    assert not indexes
     assert len(interpreters) == len(other_interpreters()) - count
 
 

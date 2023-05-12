@@ -77,7 +77,9 @@ class _PexEnvironmentBootstrapper(Magics):  # type: ignore[misc]  # IPython.core
         return binaries[0]
 
     def _append_random_id(self, base_name: str, random_id_length: int = 5) -> str:
-        random_id = "".join(random.choice(string.ascii_letters) for n in range(random_id_length))
+        random_id = "".join(
+            random.choice(string.ascii_letters) for _ in range(random_id_length)
+        )
         return f"{base_name}-{random_id}"
 
     @contextmanager
@@ -139,7 +141,7 @@ class _PexEnvironmentBootstrapper(Magics):  # type: ignore[misc]  # IPython.core
         outputter.append_display_data(ipywidgets.HTML(terminal_styling))
 
         folder = ipywidgets.Accordion(children=[outputter])
-        folder.selected_index = None if collapsed is True else 0
+        folder.selected_index = None if collapsed else 0
 
         set_output_glyph(" ")
         display(folder)
@@ -316,11 +318,10 @@ class _PexEnvironmentBootstrapper(Magics):  # type: ignore[misc]  # IPython.core
             )
             return
 
-        resulting_pex = self._run_pex(requirements)
-        if not resulting_pex:
-            self._display_line("ERROR: Failed to resolve requirements! See output above.")
-        else:
+        if resulting_pex := self._run_pex(requirements):
             self._bootstrap_pex(resulting_pex)
+        else:
+            self._display_line("ERROR: Failed to resolve requirements! See output above.")
 
     @line_magic  # type: ignore[misc]  # IPython.core.magic is untyped.
     def pex_load(self, bootstrap_pex: str) -> None:
